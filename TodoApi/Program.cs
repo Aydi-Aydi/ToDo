@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<ToDoDbContext>(option => option.UseMySql("Server=localhost;Database=ToDo;User Id=Aydi;Password=Aydi@327534111;",
+builder.Services.AddDbContext<ToDoDbContext>(option => option.UseMySql("Server=bqthdy56kemqkeuaxkoh-mysql.services.clever-cloud.com;Database=ToDo;User Id=Aydi;Password=Aydi@327534111;",
         Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql")));
 
 builder.Services.AddEndpointsApiExplorer();
