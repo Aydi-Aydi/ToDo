@@ -131,5 +131,4 @@ c:\practicode\toDoList\TodoApi\bin\Debug\net8.0\Microsoft.Extensions.ObjectPool.
 c:\practicode\toDoList\TodoApi\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
 c:\practicode\toDoList\TodoApi\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
 c:\practicode\toDoList\TodoApi\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
-c:\practicode\toDoList\TodoApi\bin\Debug\net8.0\client\package-lock.json
-c:\practicode\toDoList\TodoApi\bin\Debug\net8.0\client\package.json
+C:\practicode\toDoList\TodoApi\obj\Debug\net8.0\TodoApi.sourcelink.json
