@@ -13,19 +13,18 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<ToDoDbContext>(option => option.UseMySql("Server=bqthdy56kemqkeuaxkoh-mysql.services.clever-cloud.com;Database=ToDo;User Id=Aydi;Password=Aydi@327534111;",
+
+//דאגה למשתנה הסביבה
+var connectionString = Environment.GetEnvironmentVariable("connection_string");
+builder.Configuration["ConnectionStrings:ToDo"] = connectionString;
+
+builder.Services.AddDbContext<ToDoDbContext>(option => option.UseMySql(Environment.GetEnvironmentVariable("connection_string"),
         Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql")));
 
 builder.Services.AddEndpointsApiExplorer();
 var _configuration = builder.Configuration;
-//לא בטוחה בזה:
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-//מברוק עשתה קלאסס שמטפל באופן אישי בטוקן - אם אנחנו רוצות, צריך גם להעתיק את הקלאס ולשנות לפי הצרכים שלנו
-// //builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationHandler>();
 
-// הוסף את Swagger לפני קריאת Build
-// builder.Services.AddSwaggerGen();
-// סוואגר - מברוק כתבה, להדוק שזה לא עושה בעיות:
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
