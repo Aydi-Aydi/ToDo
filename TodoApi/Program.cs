@@ -85,11 +85,10 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 app.UseCors(MyAllowSpecificOrigins);
-if (app.Environment.IsDevelopment())
-{
+
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+
 //גם ממברוק
 app.UseAuthentication();
 app.UseAuthorization();
