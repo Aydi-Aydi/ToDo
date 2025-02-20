@@ -16,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 //דאגה למשתנה הסביבה
 
-var connectionString = Environment.GetEnvironmentVariable("connection_string") 
+var connectionString = Environment.GetEnvironmentVariable(connection_string) 
     ?? builder.Configuration.GetConnectionString("ToDo");
 
 
