@@ -16,12 +16,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 //דאגה למשתנה הסביבה
 
-var connectionString = Environment.GetEnvironmentVariable("connection_string") 
-    ?? builder.Configuration.GetConnectionString("ToDo");
+// var connectionString = Environment.GetEnvironmentVariable("connection_string") 
+//     ?? builder.Configuration.GetConnectionString("ToDo");
+    
+builder.Services.AddDbContext<ToDoDbContext>(options =>
+    options.UseMySql(builder.Configuration.GetConnectionString("ToDo"),
+                     Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql")));
 
 
-builder.Services.AddDbContext<ToDoDbContext>(option => option.UseMySql(connectionString,
-        Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql")));
+// builder.Services.AddDbContext<ToDoDbContext>(option => option.UseMySql(connectionString,
+//         Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql")));
 
 builder.Services.AddEndpointsApiExplorer();
 var _configuration = builder.Configuration;

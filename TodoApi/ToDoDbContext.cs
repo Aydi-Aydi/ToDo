@@ -22,16 +22,37 @@ public partial class ToDoDbContext : DbContext
 
     // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //     => optionsBuilder.UseMySql("name=ToDo", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql"));
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-{
-    if (!optionsBuilder.IsConfigured)
-    {
-        var connectionString = Environment.GetEnvironmentVariable("connection_string") 
-            ?? "your-default-connection-string-here"; // או לקרוא מהקונפיגורציה אם יש לך
+//     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+// {
+//     if (!optionsBuilder.IsConfigured)
+//     {
+//         var connectionString = Environment.GetEnvironmentVariable("connection_string") 
+//             ?? "your-default-connection-string-here"; // או לקרוא מהקונפיגורציה אם יש לך
 
-        optionsBuilder.UseMySql(connectionString, Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql"));
-    }
-}
+//         optionsBuilder.UseMySql(connectionString, Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql"));
+//     }
+// }
+        // עדכון הפונקציה כך שתשתמש בהגדרות בקובץ appsettings.json
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            // מקבל את ה-Connection String מתוך appsettings.json
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            var connectionString = configuration.GetConnectionString("ToDo");
+
+            // אם לא מצאנו את ה-Connection String בקובץ, נזרוק חריגה
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new InvalidOperationException("The connection string is not configured.");
+            }
+
+            // מחבר למסד הנתונים ב-Cloud באמצעות ה-Connection String
+            optionsBuilder.UseMySql(connectionString, Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql"));
+        }
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
