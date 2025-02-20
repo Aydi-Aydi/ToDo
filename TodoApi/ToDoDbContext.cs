@@ -20,8 +20,19 @@ public partial class ToDoDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //     => optionsBuilder.UseMySql("name=ToDo", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql"));
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseMySql("name=ToDo", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql"));
+{
+    if (!optionsBuilder.IsConfigured)
+    {
+        var connectionString = Environment.GetEnvironmentVariable("connection_string") 
+            ?? "your-default-connection-string-here"; // או לקרוא מהקונפיגורציה אם יש לך
+
+        optionsBuilder.UseMySql(connectionString, Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql"));
+    }
+}
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

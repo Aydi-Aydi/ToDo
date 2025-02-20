@@ -16,8 +16,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 //דאגה למשתנה הסביבה
 
-var connectionString = Environment.GetEnvironmentVariable("connection_string");
-builder.Configuration["ConnectionStrings:ToDo"] = connectionString;
+var connectionString = Environment.GetEnvironmentVariable("connection_string") 
+    ?? builder.Configuration.GetConnectionString("ToDo");
+
 
 builder.Services.AddDbContext<ToDoDbContext>(option => option.UseMySql(connectionString,
         Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql")));
@@ -122,6 +123,7 @@ object CreateJWT(User user)
 //חסר לנו: קריאט ג'ט
 app.MapPost("/login", (ToDoDbContext dbContext, [FromBody] LoginModel loginModel) =>
 {
+    
     var user = dbContext.Users?.FirstOrDefault(u => u.UserName == loginModel.userName && u.Password == loginModel.Password);
     if (user is not null)
     {
