@@ -15,10 +15,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 var builder = WebApplication.CreateBuilder(args);
 
 //דאגה למשתנה הסביבה
+
 var connectionString = Environment.GetEnvironmentVariable("connection_string");
 builder.Configuration["ConnectionStrings:ToDo"] = connectionString;
 
-builder.Services.AddDbContext<ToDoDbContext>(option => option.UseMySql(Environment.GetEnvironmentVariable("connection_string"),
+builder.Services.AddDbContext<ToDoDbContext>(option => option.UseMySql(connectionString,
         Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql")));
 
 builder.Services.AddEndpointsApiExplorer();
