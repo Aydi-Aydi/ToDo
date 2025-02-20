@@ -18,12 +18,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // var connectionString = Environment.GetEnvironmentVariable("connection_string") 
 //     ?? builder.Configuration.GetConnectionString("ToDo");
-    
+builder.Services.AddLogging();
+// builder.Services.AddDbContext<ToDoDbContext>(options =>
+//     options.UseMySql(builder.Configuration.GetConnectionString("ToDo"),
+//                      Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql")));
+
 builder.Services.AddDbContext<ToDoDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("ToDo"),
-                     Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql")));
-
-
+                     new MySqlServerVersion(new Version(8, 0, 40)),
+                     mysqlOptions => mysqlOptions.EnableRetryOnFailure()));
 // builder.Services.AddDbContext<ToDoDbContext>(option => option.UseMySql(connectionString,
 //         Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql")));
 
@@ -99,9 +102,6 @@ app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthentication();
 app.UseAuthorization();
 
-
-
-
 object CreateJWT(User user)
 {
     var claims = new List<Claim>()
@@ -125,15 +125,18 @@ object CreateJWT(User user)
 }
 //לוגין - קוד מברוק
 //חסר לנו: קריאט ג'ט
-app.MapPost("/login", (ToDoDbContext dbContext, [FromBody] LoginModel loginModel) =>
+app.MapPost("/login", (ToDoDbContext dbContext, [FromBody] LoginModel loginModel , ILogger<Program> logger) =>
 {
-    
-    var user = dbContext.Users?.FirstOrDefault(u => u.UserName == loginModel.userName && u.Password == loginModel.Password);
+        logger.LogInformation("_____________________tgtgt");
+    logger.LogInformation((loginModel.userName).ToString());
+    var user = dbContext.Users?.FirstOrDefault(u => u.UserName.Equals(loginModel.userName) && u.Password.Equals(loginModel.Password));
+        logger.LogInformation("המשכנו את לוגין", loginModel.userName);
     if (user is not null)
     {
         var jwt = CreateJWT(user);
         return Results.Ok(jwt);
     }
+            logger.LogInformation("סיימנו את לוגין", loginModel.userName);
     return Results.Unauthorized();
 });
 
@@ -149,7 +152,9 @@ app.MapPost("/register", (ToDoDbContext dbContext, [FromBody] LoginModel loginMo
     return Results.Ok(jwt);
 });
 app.MapGet("/", () => "Helloההההההההההה!");
-app.MapGet("/hy", () => "איידי, זה פשוט רץ לי... ה' תודה");
+app.MapGet("/hy", ( ILogger<Program> logger) => {
+    logger.LogInformation("jjj");
+    return "איידי, זה פשוט רץ לי... ה' תודה";});
 app.MapGet("/tasks", [Authorize] async(ToDoDbContext dbContext) => dbContext.Items);
 
 app.MapPost("/tasks", [Authorize] async (ToDoDbContext dbContext, [FromBody] CreateItemRequest request) =>
