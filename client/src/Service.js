@@ -2,7 +2,7 @@ import axios from 'axios';
 // import { jwtDecode as jwt_decode } from "jwt-decode";
 
 
-const apiUrl = "http://localhost:5007"
+const apiUrl = process.env.REACT_APP_API
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 setAuthorizationBearer();
 
