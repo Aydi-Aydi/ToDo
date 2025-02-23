@@ -60,7 +60,7 @@ export default {
     return result;
 },
 login: async (UserName, password) => {
-  const res = await axios.post("/login", { UserName, password });
+  const res = await axios.post(`${apiUrl}/login`, { UserName, password });
   saveAccessToken(res.data);
 },
   deleteTask:async(id)=>{
@@ -70,7 +70,7 @@ login: async (UserName, password) => {
 
   },
   register: async (UserName, password) => {
-    const res = await axios.post("/register", { UserName, password });
+    const res = await axios.post(`${apiUrl}/register`, { UserName, password });
     saveAccessToken(res.data);
   },
 };
