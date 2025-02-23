@@ -67,9 +67,10 @@ login: async (UserName, password) => {
       saveAccessToken(res.data);
   } catch (error) {
       console.error("Error during login request:", error);
-      throw error; // חשוב לזרוק את השגיאה כדי שה-catch בחלק הקורא יוכל לתפוס אותה
+      throw error;
   }
 },
+
 
   deleteTask:async(id)=>{
     console.log('deleteTask')
