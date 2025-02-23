@@ -23,9 +23,16 @@ export const Login =() =>{
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await Service.login(UserName, password);
-    navigate("/task", { replace: true });
-  };
+    try {
+        await Service.login(UserName, password);
+        navigate("/task", { replace: true });
+    } catch (error) {
+        console.error("Login error:", error); // לוג של השגיאה
+        console.log("UserName:", UserName); // לוג של שם המשתמש
+        console.log("Password:", password); // לוג של הסיסמה (שקול לא לחשוף סיסמאות בלוגים)
+    }
+};
+
 
   return (
     <Container maxWidth="xs">

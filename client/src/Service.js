@@ -60,9 +60,17 @@ export default {
     return result;
 },
 login: async (UserName, password) => {
-  const res = await axios.post(`${apiUrl}/login`, { userName: UserName, Password: password });
-  saveAccessToken(res.data);
+  console.log("Sending login request with:", { UserName, password });
+  try {
+      const res = await axios.post(`${apiUrl}/login`, { userName: UserName, Password: password });
+      console.log("Login response:", res.data);
+      saveAccessToken(res.data);
+  } catch (error) {
+      console.error("Error during login request:", error);
+      throw error; // חשוב לזרוק את השגיאה כדי שה-catch בחלק הקורא יוכל לתפוס אותה
+  }
 },
+
   deleteTask:async(id)=>{
     console.log('deleteTask')
     const result = await axios.delete(`${apiUrl}/tasks/${id}`); 
