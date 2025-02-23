@@ -1,4 +1,3 @@
-//imports dont touch
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -27,9 +26,7 @@ export const Login =() =>{
         await Service.login(UserName, password);
         navigate("/task", { replace: true });
     } catch (error) {
-        console.error("Login error:", error); // לוג של השגיאה
-        console.log("UserName:", UserName); // לוג של שם המשתמש
-        console.log("Password:", password); // לוג של הסיסמה (שקול לא לחשוף סיסמאות בלוגים)
+        console.error("Login error:", error); 
     }
 };
 

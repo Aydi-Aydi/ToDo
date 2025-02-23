@@ -14,21 +14,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//דאגה למשתנה הסביבה
-
-// var connectionString = Environment.GetEnvironmentVariable("connection_string") 
-//     ?? builder.Configuration.GetConnectionString("ToDo");
 builder.Services.AddLogging();
-// builder.Services.AddDbContext<ToDoDbContext>(options =>
-//     options.UseMySql(builder.Configuration.GetConnectionString("ToDo"),
-//                      Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql")));
 
 builder.Services.AddDbContext<ToDoDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("ToDo"),
                      new MySqlServerVersion(new Version(8, 0, 40)),
                      mysqlOptions => mysqlOptions.EnableRetryOnFailure()));
-// builder.Services.AddDbContext<ToDoDbContext>(option => option.UseMySql(connectionString,
-//         Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.40-mysql")));
 
 builder.Services.AddEndpointsApiExplorer();
 var _configuration = builder.Configuration;
@@ -61,7 +52,6 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-//כנ"ל מברוק כתבה, צריך לבדוק שתקין:
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -87,9 +77,12 @@ builder.Services.AddCors(options =>
     options.AddPolicy(MyAllowSpecificOrigins,
     policy =>
     {
-        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        policy.WithOrigins("https://todo-qdvl.onrender.com") 
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
+
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
@@ -98,7 +91,6 @@ app.UseCors(MyAllowSpecificOrigins);
     app.UseSwagger();
     app.UseSwaggerUI();
 
-//גם ממברוק
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -109,9 +101,9 @@ object CreateJWT(User user)
                     new Claim("id", user.Id.ToString()),
                     new Claim("name", user.UserName),
                 };
-#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8604 
     var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("JWT:Key")));
-#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8604 
     var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
     var tokeOptions = new JwtSecurityToken(
         issuer: _configuration.GetValue<string>("JWT:Issuer"),
@@ -123,8 +115,6 @@ object CreateJWT(User user)
     var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
     return new { Token = tokenString };
 }
-//לוגין - קוד מברוק
-//חסר לנו: קריאט ג'ט
 app.MapPost("/login", (ToDoDbContext dbContext, [FromBody] LoginModel loginModel , ILogger<Program> logger) =>
 {
         logger.LogInformation("_____________________tgtgt");
@@ -140,7 +130,6 @@ app.MapPost("/login", (ToDoDbContext dbContext, [FromBody] LoginModel loginModel
     return Results.Unauthorized();
 });
 
-//הרשמה - רגיסטר - 
 app.MapPost("/register", (ToDoDbContext dbContext, [FromBody] LoginModel loginModel) =>
 {
     var name = loginModel.userName;
@@ -192,7 +181,7 @@ app.MapPut("/tasks/{ID}", [Authorize] async (ToDoDbContext dbContext, int ID, [F
     var item = await dbContext.Items.FindAsync(ID);
     if (item != null)
     {
-        item.IsComplete = IsComplete; // עדכן את ה-IsComplete ישירות
+        item.IsComplete = IsComplete; 
         await dbContext.SaveChangesAsync();
         return Results.Ok(item);
     }

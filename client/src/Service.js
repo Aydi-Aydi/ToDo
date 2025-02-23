@@ -1,5 +1,4 @@
 import axios from 'axios';
-// import { jwtDecode as jwt_decode } from "jwt-decode";
 
 
 const apiUrl = process.env.REACT_APP_API
@@ -28,13 +27,6 @@ axios.interceptors.response.use(
   }
 );
 export default {
-  // getLoginUser: () => {
-  //   const accessToken = localStorage.getItem("access_token");
-  //   if (accessToken) {
-  //     return jwt_decode(accessToken);
-  //   }
-  //   return null;
-  // },
 
   getTasks: async () => {
     const result = await axios.get(`${apiUrl}/tasks`);    
@@ -49,13 +41,13 @@ export default {
       return result;
     } catch (error) {
       console.error('Error adding task:', error);
-      throw error; // אפשר לזרוק את השגיאה כדי שהקוד הקורא לפונקציה יוכל לטפל בה
+      throw error; 
     }
   },
   setCompleted: async (id, isComplete) => {
     console.log('setCompleted', { id, isComplete });
     const result = await axios.put(`${apiUrl}/tasks/${id}`, isComplete, {
-        headers: { "Content-Type": "application/json" } // הוסף את הכותרת הזו
+        headers: { "Content-Type": "application/json" } 
     });
     return result;
 },

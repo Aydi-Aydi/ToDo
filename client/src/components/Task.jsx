@@ -15,8 +15,8 @@ export const Task = () => {
     e.preventDefault();
     try {
       await service.addTask(newTodo);
-      setNewTodo(""); // clear input
-      await getTodos(); // refresh tasks list
+      setNewTodo(""); 
+      await getTodos(); 
     } catch (error) {
       console.error('Failed to create todo:', error);
     }
@@ -24,12 +24,12 @@ export const Task = () => {
   
   async function updateCompleted(todo, isComplete) {
     await service.setCompleted(todo.id, isComplete);
-    await getTodos();//refresh tasks list (in order to see the updated one)
+    await getTodos();
   }
 
   async function deleteTodo(id) {
     await service.deleteTask(id);
-    await getTodos();//refresh tasks list
+    await getTodos();
   }
 
   useEffect(() => {
